@@ -144,8 +144,7 @@
                 <div class="max-w-6xl mx-auto p-4 md:p-8 mt-0 md:mt-4 print:hidden">
                     <div class="flex items-center justify-between mb-8">
                         <div class="flex items-center space-x-4">
-                            <!-- Removido el md:hidden para que el menú se pueda abrir en PC también -->
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm">
+                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm md:hidden">
                                 <i data-lucide="menu" class="w-6 h-6"></i>
                             </button>
                             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hola, Equipo J&E 👋</h1>
@@ -277,8 +276,7 @@
                     
                     <div class="flex flex-wrap justify-between items-center mb-6 md:mb-8 gap-3 print:hidden">
                         <div class="flex items-center space-x-2">
-                            <!-- Removido el md:hidden para que el menú sea accesible -->
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full bg-gray-50">
+                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full bg-gray-50 md:hidden">
                                 <i data-lucide="menu" class="w-6 h-6"></i>
                             </button>
                             <button onclick="switchTab('dashboard')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full hidden md:flex items-center space-x-1 text-sm font-medium">
@@ -493,6 +491,29 @@
         let quotesHistory = [];
         let currentQuote = null;
 
+        // --- SISTEMA DE INACTIVIDAD ---
+        const INACTIVITY_TIME = 15 * 60 * 1000; // 15 minutos en milisegundos
+        let inactivityTimer;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            if (currentUser) {
+                inactivityTimer = setTimeout(() => {
+                    handleLogout();
+                    const errP = document.getElementById('login-error');
+                    errP.textContent = "Sesión cerrada automáticamente por inactividad.";
+                    errP.classList.remove('hidden');
+                }, INACTIVITY_TIME);
+            }
+        }
+
+        function setupInactivityListeners() {
+            const activityEvents = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'];
+            activityEvents.forEach(eventName => {
+                document.addEventListener(eventName, resetInactivityTimer, true);
+            });
+        }
+
         // --- SISTEMA DE AUTENTICACIÓN ---
         auth.onAuthStateChanged(user => {
             const authScreen = document.getElementById('auth-screen');
@@ -504,7 +525,8 @@
                 currentUser = user;
                 document.getElementById('current-user-email').textContent = user.email;
                 
-                // Mostrar spinner mientras descarga de la nube
+                resetInactivityTimer(); // Iniciar el temporizador de inactividad al entrar
+                
                 form.classList.add('hidden');
                 loading.classList.remove('hidden');
                 
@@ -517,6 +539,7 @@
                 });
             } else {
                 currentUser = null;
+                clearTimeout(inactivityTimer); // Detener el temporizador si cierra sesión
                 authScreen.classList.remove('hidden');
                 appContainer.classList.add('hidden');
                 appContainer.classList.remove('flex');
@@ -923,6 +946,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             document.getElementById('quote-date').addEventListener('change', function(e) { if (currentQuote) currentQuote.date = e.target.value; });
+            setupInactivityListeners(); // Iniciar los "escuchas" de inactividad
         });
 
     </script>
