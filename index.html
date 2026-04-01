@@ -59,6 +59,9 @@
         /* Loader de carga */
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #d1a751; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Selectores de estado */
+        .status-select { appearance: none; -webkit-appearance: none; padding-right: 1.5rem; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50 font-sans text-gray-900 flex flex-col">
@@ -140,136 +143,174 @@
         </div>
 
         <main class="transition-all duration-300 flex-1">
+            <!-- VISTA: DASHBOARD MODERNO -->
             <div id="tab-dashboard" class="tab-content active">
                 <div class="max-w-6xl mx-auto p-4 md:p-8 mt-0 md:mt-4 print:hidden">
-                    <div class="flex items-center justify-between mb-8">
-                        <div class="flex items-center space-x-4">
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm md:hidden">
-                                <i data-lucide="menu" class="w-6 h-6"></i>
-                            </button>
-                            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hola, Equipo J&E 👋</h1>
-                        </div>
-                        
-                        <div class="flex items-center space-x-3">
-                            <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span>Nube Sincronizada</span>
-                            </div>
-                            <button onclick="handleLogout()" class="flex items-center space-x-2 bg-red-50 text-red-600 px-4 py-2 rounded-full border border-red-100 hover:bg-red-100 transition shadow-sm font-medium text-sm" title="Cerrar sesión">
-                                <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden sm:inline">Cerrar sesión</span>
-                            </button>
+                    
+                    <!-- Header Top -->
+                    <div class="flex items-center justify-between mb-6">
+                        <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm md:hidden">
+                            <i data-lucide="menu" class="w-6 h-6"></i>
+                        </button>
+                        <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span>Sistema En Línea</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                            <div class="bg-primary p-4 rounded-full text-gray-800">
-                                <i data-lucide="file-text" class="w-8 h-8"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Documentos Totales</p>
-                                <h3 class="text-2xl font-bold text-gray-800" id="dash-total-quotes">0</h3>
-                            </div>
+                    <!-- Hero Banner -->
+                    <div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h1 class="text-3xl md:text-4xl font-extrabold mb-2 text-primary-400">¡Hola, Equipo J&E! 👋</h1>
+                            <p class="text-gray-300 text-lg max-w-xl">Bienvenido al panel de control. Gestiona tus cotizaciones, analiza tu rendimiento y cierra más ventas.</p>
                         </div>
-                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                            <div class="bg-green-50 p-4 rounded-full text-green-600">
-                                <i data-lucide="users" class="w-8 h-8"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Clientes Registrados</p>
-                                <h3 class="text-2xl font-bold text-gray-800" id="dash-total-clients">0</h3>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center space-x-4">
-                            <div class="bg-purple-50 p-4 rounded-full text-purple-600">
-                                <i data-lucide="trending-up" class="w-8 h-8"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Rendimiento</p>
-                                <h3 class="text-sm font-bold text-purple-600 mt-1">Próximamente...</h3>
-                            </div>
+                        <!-- Decoración de fondo -->
+                        <div class="absolute right-0 top-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
+                            <i data-lucide="trending-up" class="w-64 h-64"></i>
                         </div>
                     </div>
 
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Acciones Rápidas</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <button onclick="switchTab('cotizacion'); handleNewQuote();" class="bg-primary text-gray-900 p-4 rounded-xl shadow-sm hover:bg-primary-400 transition flex flex-col items-center justify-center space-y-2 h-32">
-                            <i data-lucide="plus-circle" class="w-8 h-8"></i>
-                            <span class="font-medium">Nuevo Documento</span>
+                    <!-- Tarjetas de Rendimiento -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-primary-100 p-3 rounded-lg text-primary-800">
+                                    <i data-lucide="file-text" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Docs</span>
+                            </div>
+                            <h3 class="text-3xl font-extrabold text-gray-800" id="dash-total-quotes">0</h3>
+                            <p class="text-sm text-gray-500 mt-1">Registrados en el sistema</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg text-green-700">
+                                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Confirmadas</span>
+                            </div>
+                            <h3 class="text-3xl font-extrabold text-gray-800" id="dash-confirmed-quotes">0</h3>
+                            <p class="text-sm text-gray-500 mt-1">Trabajos asegurados</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-purple-100 p-3 rounded-lg text-purple-700">
+                                    <i data-lucide="percent" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tasa de Cierre</span>
+                            </div>
+                            <h3 class="text-3xl font-extrabold text-gray-800" id="dash-conversion-rate">0%</h3>
+                            <p class="text-sm text-gray-500 mt-1">Cotizaciones vs Confirmadas</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg text-blue-700">
+                                    <i data-lucide="users" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Clientes</span>
+                            </div>
+                            <h3 class="text-3xl font-extrabold text-gray-800" id="dash-total-clients">0</h3>
+                            <p class="text-sm text-gray-500 mt-1">En tu base de datos</p>
+                        </div>
+                    </div>
+
+                    <!-- Acciones Principales Grandes -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <button onclick="switchTab('cotizacion'); handleNewQuote();" class="group relative bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-left hover:shadow-md hover:border-primary-400 transition-all overflow-hidden">
+                            <div class="relative z-10 flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-primary-800 transition-colors">Crear Documento</h3>
+                                    <p class="text-gray-500">Inicia una nueva cotización o factura desde cero.</p>
+                                </div>
+                                <div class="bg-primary-50 text-primary-800 p-4 rounded-full">
+                                    <i data-lucide="plus" class="w-8 h-8"></i>
+                                </div>
+                            </div>
                         </button>
-                        <button onclick="switchTab('historial')" class="bg-white text-gray-700 p-4 rounded-xl shadow-sm border border-gray-200 hover:bg-gray-50 transition flex flex-col items-center justify-center space-y-2 h-32">
-                            <i data-lucide="history" class="w-8 h-8 text-primary-700"></i>
-                            <span class="font-medium">Ver Historial</span>
-                        </button>
-                        <button onclick="switchTab('clientes')" class="bg-white text-gray-700 p-4 rounded-xl shadow-sm border border-gray-200 hover:bg-gray-50 transition flex flex-col items-center justify-center space-y-2 h-32">
-                            <i data-lucide="users" class="w-8 h-8 text-green-600"></i>
-                            <span class="font-medium">Directorio Clientes</span>
-                        </button>
-                        <button onclick="switchTab('categorias')" class="bg-white text-gray-700 p-4 rounded-xl shadow-sm border border-gray-200 hover:bg-gray-50 transition flex flex-col items-center justify-center space-y-2 h-32">
-                            <i data-lucide="list" class="w-8 h-8 text-purple-600"></i>
-                            <span class="font-medium">Gestión Categorías</span>
+
+                        <button onclick="switchTab('historial')" class="group relative bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-left hover:shadow-md hover:border-gray-300 transition-all overflow-hidden">
+                            <div class="relative z-10 flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-gray-900 transition-colors">Ir al Historial</h3>
+                                    <p class="text-gray-500">Busca, filtra, edita o cambia el estado de tus facturas.</p>
+                                </div>
+                                <div class="bg-gray-50 text-gray-600 p-4 rounded-full">
+                                    <i data-lucide="search" class="w-8 h-8"></i>
+                                </div>
+                            </div>
                         </button>
                     </div>
 
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-lg font-bold text-gray-800">Últimos Documentos</h2>
-                            <button onclick="switchTab('historial')" class="text-sm text-primary-800 hover:underline font-medium">Ver todos</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead>
-                                    <tr class="text-sm text-gray-500 border-b">
-                                        <th class="pb-3 font-medium">ID</th>
-                                        <th class="pb-3 font-medium">Tipo</th>
-                                        <th class="pb-3 font-medium">Fecha</th>
-                                        <th class="pb-3 font-medium">Cliente</th>
-                                        <th class="pb-3 font-medium">Editado por</th>
-                                        <th class="pb-3 font-medium text-right">Monto Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dash-recent-quotes">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
 
+            <!-- VISTA: HISTORIAL DE COTIZACIONES -->
             <div id="tab-historial" class="tab-content">
-                <div class="max-w-6xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
-                    <div class="flex items-center justify-between mb-6">
+                <div class="max-w-7xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
                         <div class="flex items-center">
                             <button onclick="switchTab('dashboard')" class="mr-3 p-2 bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors">
                                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
                             </button>
                             <h2 class="text-xl md:text-2xl font-bold text-gray-800">Historial de Documentos</h2>
                         </div>
-                        <button onclick="switchTab('cotizacion'); handleNewQuote();" class="bg-primary text-gray-900 font-medium px-4 py-2 rounded flex items-center space-x-2 hover:bg-primary-400 transition text-sm md:text-base">
-                            <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden sm:inline">Nuevo Documento</span><span class="sm:hidden">Nuevo</span>
+                        <button onclick="switchTab('cotizacion'); handleNewQuote();" class="bg-primary text-gray-900 font-medium px-4 py-2 rounded flex items-center space-x-2 hover:bg-primary-400 transition text-sm md:text-base whitespace-nowrap">
+                            <i data-lucide="plus" class="w-4 h-4"></i> <span>Nuevo Documento</span>
                         </button>
+                    </div>
+
+                    <!-- BARRA DE FILTROS -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <input type="text" id="filter-search" placeholder="Buscar ID o Cliente..." class="w-full pl-10 p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600" oninput="renderHistorial()">
+                        </div>
+                        <div>
+                            <input type="date" id="filter-date" class="w-full p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600 text-gray-600" onchange="renderHistorial()">
+                        </div>
+                        <div>
+                            <select id="filter-status" class="w-full p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600 text-gray-600 cursor-pointer" onchange="renderHistorial()">
+                                <option value="">Todos los Estados</option>
+                                <option value="PENDIENTE">Pendientes</option>
+                                <option value="CONFIRMADA">Confirmadas</option>
+                                <option value="RECHAZADA">Rechazadas</option>
+                            </select>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <input type="text" id="filter-user" placeholder="Filtrar por Usuario..." class="w-full pl-10 p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600" oninput="renderHistorial()">
+                        </div>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-primary text-gray-900">
-                                    <th class="p-3 border-b border-primary-200">ID</th>
-                                    <th class="p-3 border-b border-primary-200">Tipo</th>
-                                    <th class="p-3 border-b border-primary-200">Fecha</th>
-                                    <th class="p-3 border-b border-primary-200">Cliente</th>
-                                    <th class="p-3 border-b border-primary-200">Usuario (Editor)</th>
-                                    <th class="p-3 border-b border-primary-200 text-right">Total</th>
-                                    <th class="p-3 border-b border-primary-200 text-center w-24">Acciones</th>
+                                <tr class="bg-gray-100 text-gray-700 text-sm">
+                                    <th class="p-3 border-b border-gray-200 font-semibold rounded-tl-lg">ID</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold">Fecha</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold">Cliente</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold">Estado</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold">Editor</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold text-right">Total</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold text-center w-24 rounded-tr-lg">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="historial-table-body">
-                                </tbody>
+                                <!-- JS renderiza historial aquí -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             
+            <!-- VISTA: COTIZACIÓN (EDITOR) -->
             <div id="tab-cotizacion" class="tab-content">
                 <div class="max-w-[850px] mx-auto bg-white p-4 sm:p-8 md:p-14 shadow-lg min-h-screen print:p-0 print:shadow-none print:w-full">
                     
@@ -278,7 +319,7 @@
                             <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full bg-gray-50 md:hidden">
                                 <i data-lucide="menu" class="w-6 h-6"></i>
                             </button>
-                            <button onclick="switchTab('dashboard')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full hidden md:flex items-center space-x-1 text-sm font-medium">
+                            <button onclick="switchTab('historial')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full hidden md:flex items-center space-x-1 text-sm font-medium">
                                 <i data-lucide="arrow-left" class="w-4 h-4"></i> <span>Volver</span>
                             </button>
                         </div>
@@ -307,7 +348,11 @@
                                 <i data-lucide="chevron-down" class="w-5 h-5 absolute right-[-20px] top-1/2 transform -translate-y-1/2 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none print:hidden"></i>
                             </div>
 
-                            <p id="quote-id-display" class="text-lg md:text-xl font-bold text-gray-600 mb-4 md:mb-6">#QT004</p>
+                            <div class="flex items-center space-x-2 mb-4 md:mb-6 print:hidden">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" id="quote-status-badge">PENDIENTE</span>
+                            </div>
+                            <p id="quote-id-display" class="text-lg md:text-xl font-bold text-gray-600 mb-4 hidden print:block">#QT004</p>
+                            <p id="quote-id-display-screen" class="text-lg md:text-xl font-bold text-gray-600 mb-4 print:hidden">#QT004</p>
                             
                             <div class="text-gray-700 space-y-2 text-sm">
                                 <div class="flex flex-col sm:flex-row sm:items-center">
@@ -380,6 +425,7 @@
                 </div>
             </div>
 
+            <!-- VISTA: CLIENTES -->
             <div id="tab-clientes" class="tab-content">
                 <div class="max-w-4xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
                     <div class="flex items-center mb-6">
@@ -401,11 +447,11 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-primary text-gray-900">
-                                    <th class="p-3 border-b border-primary-300">Nombre</th>
-                                    <th class="p-3 border-b border-primary-300">Teléfono</th>
-                                    <th class="p-3 border-b border-primary-300">Email</th>
-                                    <th class="p-3 border-b border-primary-300 w-16">Acciones</th>
+                                <tr class="bg-gray-100 text-gray-700 text-sm">
+                                    <th class="p-3 border-b border-gray-200 font-semibold rounded-tl-lg">Nombre</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold">Teléfono</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold">Email</th>
+                                    <th class="p-3 border-b border-gray-200 font-semibold w-16 rounded-tr-lg">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="clients-table-body">
@@ -415,6 +461,7 @@
                 </div>
             </div>
 
+            <!-- VISTA: CATEGORÍAS -->
             <div id="tab-categorias" class="tab-content">
                 <div class="max-w-2xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
                     <div class="flex items-center mb-6">
@@ -434,6 +481,7 @@
                 </div>
             </div>
 
+            <!-- VISTA: AJUSTES -->
             <div id="tab-ajustes" class="tab-content">
                 <div class="max-w-2xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
                     <div class="flex items-center mb-6">
@@ -476,7 +524,7 @@
 
     <script>
         // ======================================================================
-        // 1. CONFIGURACIÓN DE FIREBASE (¡CÓPIALA DE TU CONSOLA Y PÉGALA AQUÍ!)
+        // 1. CONFIGURACIÓN DE FIREBASE
         // ======================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyD2cpzWK-dLz3CqLUxKiTficEiCFCvFIm0",
@@ -502,7 +550,7 @@
         let currentQuote = null;
 
         // --- SISTEMA DE INACTIVIDAD ---
-        const INACTIVITY_TIME = 15 * 60 * 1000; // 15 minutos en milisegundos
+        const INACTIVITY_TIME = 15 * 60 * 1000;
         let inactivityTimer;
 
         function resetInactivityTimer() {
@@ -535,7 +583,7 @@
                 currentUser = user;
                 document.getElementById('current-user-email').textContent = user.email;
                 
-                resetInactivityTimer(); // Iniciar el temporizador de inactividad al entrar
+                resetInactivityTimer();
                 
                 form.classList.add('hidden');
                 loading.classList.remove('hidden');
@@ -549,7 +597,7 @@
                 });
             } else {
                 currentUser = null;
-                clearTimeout(inactivityTimer); // Detener el temporizador si cierra sesión
+                clearTimeout(inactivityTimer);
                 authScreen.classList.remove('hidden');
                 appContainer.classList.add('hidden');
                 appContainer.classList.remove('flex');
@@ -580,7 +628,6 @@
         // --- SINCRONIZACIÓN CON FIRESTORE (LA NUBE) ---
         async function loadDataFromFirestore() {
             try {
-                // 1. Cargar Configuración General (Clientes, Categorias, Settings)
                 const docRef = db.collection('companyData').doc('mainConfig');
                 const doc = await docRef.get();
                 
@@ -590,17 +637,14 @@
                     if(data.categories) categories = data.categories;
                     if(data.settings) settings = { ...settings, ...data.settings };
                 } else {
-                    // Si es la primera vez, crear el documento en la nube
                     await docRef.set({ clients, categories, settings });
                 }
 
-                // 2. Cargar Historial de Cotizaciones
                 const snapshot = await db.collection('quotes').orderBy('id', 'desc').get();
                 quotesHistory = snapshot.docs.map(d => d.data());
 
-                // Actualizar vistas iniciales
                 renderClientDatalist();
-                handleNewQuote(); // Crea un canvas en blanco
+                handleNewQuote();
             } catch (error) {
                 console.error("Error cargando datos:", error);
                 showToast("Error de conexión a la nube");
@@ -613,24 +657,27 @@
                 await db.collection('companyData').doc('mainConfig').set({
                     clients, categories, settings
                 });
-            } catch (error) {
-                console.error("Error guardando config:", error);
-            }
+            } catch (error) {}
         }
 
-        // Reemplazamos la vieja persistData local por la de la nube
         function persistData() {
             syncConfigToCloud();
         }
 
-        // --- RESTO DE LA LÓGICA DE LA APP (Adaptada) ---
-        
-        // Utilidades: Modificado para soportar Pesos y Dólares
+        // --- UTILIDADES ---
         const formatCurrency = (amount, currency = 'DOP') => {
             if (currency === 'USD') {
                 return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
             }
             return new Intl.NumberFormat('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 }).format(amount).replace('DOP', 'RD$');
+        };
+
+        const getStatusColor = (status) => {
+            switch(status) {
+                case 'CONFIRMADA': return 'bg-green-100 text-green-800';
+                case 'RECHAZADA': return 'bg-red-100 text-red-800';
+                default: return 'bg-yellow-100 text-yellow-800'; // PENDIENTE
+            }
         };
 
         function showToast(message) {
@@ -669,27 +716,16 @@
             if (tabId === 'ajustes') renderSettings();
         }
 
-        // --- DASHBOARD E HISTORIAL ---
+        // --- DASHBOARD ---
         function renderDashboard() {
-            document.getElementById('dash-total-quotes').textContent = quotesHistory.length;
+            const total = quotesHistory.length;
+            const confirmadas = quotesHistory.filter(q => q.status === 'CONFIRMADA').length;
+            const conversionRate = total > 0 ? Math.round((confirmadas / total) * 100) : 0;
+
+            document.getElementById('dash-total-quotes').textContent = total;
             document.getElementById('dash-total-clients').textContent = clients.length;
-            const tbody = document.getElementById('dash-recent-quotes');
-            const recent = quotesHistory.slice(0, 5); // Ya viene ordenado de Firestore
-            
-            if(recent.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-500 text-sm">No hay documentos recientes.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = recent.map(q => `
-                <tr class="border-b last:border-0 hover:bg-gray-50 cursor-pointer transition" onclick="loadQuote('${q.id}')">
-                    <td class="py-3 text-sm font-medium text-primary-800">${q.id}</td>
-                    <td class="py-3 text-sm text-gray-500">${q.type || 'COTIZACIÓN'}</td>
-                    <td class="py-3 text-sm text-gray-600">${q.date}</td>
-                    <td class="py-3 text-sm text-gray-800">${q.clientName || '-'}</td>
-                    <td class="py-3 text-xs text-gray-400">${(q.lastModifiedBy || q.createdBy || '').split('@')[0]}</td>
-                    <td class="py-3 text-sm font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q), q.currency || 'DOP')}</td>
-                </tr>
-            `).join('');
+            document.getElementById('dash-confirmed-quotes').textContent = confirmadas;
+            document.getElementById('dash-conversion-rate').textContent = `${conversionRate}%`;
         }
 
         function calculateTotalFromQuote(quote) {
@@ -698,27 +734,73 @@
             return subtotal + (quote.applyTax ? subtotal * (settings.taxRate / 100) : 0);
         }
 
+        // --- HISTORIAL CON FILTROS ---
         function renderHistorial() {
             const tbody = document.getElementById('historial-table-body');
-            if (quotesHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-500">No hay historial.</td></tr>`;
+            
+            // Leer filtros
+            const search = document.getElementById('filter-search')?.value.toLowerCase() || '';
+            const date = document.getElementById('filter-date')?.value || '';
+            const status = document.getElementById('filter-status')?.value || '';
+            const user = document.getElementById('filter-user')?.value.toLowerCase() || '';
+
+            // Aplicar filtros
+            let filtered = quotesHistory.filter(q => {
+                const qStatus = q.status || 'PENDIENTE';
+                const editor = (q.lastModifiedBy || q.createdBy || '').split('@')[0].toLowerCase();
+                
+                const matchSearch = q.id.toLowerCase().includes(search) || (q.clientName && q.clientName.toLowerCase().includes(search));
+                const matchDate = date ? q.date === date : true;
+                const matchStatus = status ? qStatus === status : true;
+                const matchUser = user ? editor.includes(user) : true;
+
+                return matchSearch && matchDate && matchStatus && matchUser;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 bg-white">No se encontraron documentos con esos filtros.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = quotesHistory.map(q => `
-                <tr class="hover:bg-gray-50 transition border-b border-gray-100">
-                    <td class="p-3 font-medium text-gray-800">${q.id}</td>
-                    <td class="p-3 text-sm text-gray-500">${q.type || 'COTIZACIÓN'}</td>
+
+            tbody.innerHTML = filtered.map(q => {
+                const currentStatus = q.status || 'PENDIENTE';
+                return `
+                <tr class="hover:bg-gray-50 transition border-b border-gray-100 bg-white">
+                    <td class="p-3 font-medium text-primary-800 cursor-pointer" onclick="loadQuote('${q.id}')">${q.id} <br><span class="text-xs text-gray-400 font-normal">${q.type || 'COTIZACIÓN'}</span></td>
                     <td class="p-3 text-gray-600">${q.date}</td>
-                    <td class="p-3 text-gray-800">${q.clientName || '-'}</td>
+                    <td class="p-3 text-gray-800 font-medium">${q.clientName || '-'}</td>
+                    <td class="p-3">
+                        <select onchange="changeQuoteStatus('${q.id}', this.value)" class="status-select outline-none font-bold text-xs px-3 py-1.5 rounded-full cursor-pointer ${getStatusColor(currentStatus)}">
+                            <option value="PENDIENTE" ${currentStatus === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
+                            <option value="CONFIRMADA" ${currentStatus === 'CONFIRMADA' ? 'selected' : ''}>CONFIRMADA</option>
+                            <option value="RECHAZADA" ${currentStatus === 'RECHAZADA' ? 'selected' : ''}>RECHAZADA</option>
+                        </select>
+                    </td>
                     <td class="p-3 text-xs text-gray-500">${(q.lastModifiedBy || q.createdBy || '').split('@')[0]}</td>
                     <td class="p-3 font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q), q.currency || 'DOP')}</td>
                     <td class="p-3 text-center space-x-2">
-                        <button onclick="loadQuote('${q.id}')" class="text-primary-800 hover:text-primary-900 p-1"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
-                        <button onclick="deleteQuote('${q.id}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                        <button onclick="loadQuote('${q.id}')" class="text-primary-800 hover:text-primary-900 p-1" title="Editar / Ver"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                        <button onclick="deleteQuote('${q.id}')" class="text-red-500 hover:text-red-700 p-1" title="Eliminar"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
+        }
+
+        async function changeQuoteStatus(id, newStatus) {
+            try {
+                // Actualizar en Firebase
+                await db.collection('quotes').doc(id).update({ status: newStatus });
+                // Actualizar local
+                const quote = quotesHistory.find(q => q.id === id);
+                if (quote) quote.status = newStatus;
+                
+                renderHistorial();
+                showToast('Estado actualizado');
+            } catch (e) {
+                console.error(e);
+                showToast('Error al actualizar estado');
+            }
         }
 
         async function deleteQuote(id) {
@@ -739,7 +821,8 @@
             if (quoteToLoad) {
                 currentQuote = JSON.parse(JSON.stringify(quoteToLoad));
                 if(!currentQuote.type) currentQuote.type = 'COTIZACIÓN';
-                if(!currentQuote.currency) currentQuote.currency = 'DOP'; // Fallback para los viejos
+                if(!currentQuote.currency) currentQuote.currency = 'DOP';
+                if(!currentQuote.status) currentQuote.status = 'PENDIENTE';
                 initQuoteView();
                 switchTab('cotizacion');
             }
@@ -748,6 +831,7 @@
         // --- EDITOR DE COTIZACIÓN ---
         function initQuoteView() {
             document.getElementById('quote-id-display').textContent = currentQuote.id;
+            document.getElementById('quote-id-display-screen').textContent = currentQuote.id;
             document.getElementById('quote-date').value = currentQuote.date;
             document.getElementById('quote-client-name').value = currentQuote.clientName;
             document.getElementById('quote-apply-tax').checked = currentQuote.applyTax;
@@ -755,7 +839,12 @@
             document.getElementById('document-type-select').value = currentQuote.type || 'COTIZACIÓN';
             document.getElementById('quote-currency').value = currentQuote.currency || 'DOP';
             
-            // Firma de impresión
+            // Badge visual de estado en el editor
+            const badge = document.getElementById('quote-status-badge');
+            const status = currentQuote.status || 'PENDIENTE';
+            badge.textContent = status;
+            badge.className = `px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(status)}`;
+            
             const stamp = currentQuote.createdBy ? `Doc. original por: ${currentQuote.createdBy.split('@')[0]}` : '';
             document.getElementById('print-user-stamp').textContent = stamp;
 
@@ -768,7 +857,7 @@
         function handleCurrencyChange(value) { 
             if (currentQuote) {
                 currentQuote.currency = value;
-                renderItems(); // Refresca los simbolos y totales
+                renderItems(); 
             }
         }
 
@@ -796,27 +885,22 @@
             const btn = document.getElementById('btn-save-quote');
             btn.innerHTML = `<div class="loader" style="width:20px;height:20px;border-width:2px;"></div>`;
             
-            // Auto guardar cliente nuevo
             if (currentQuote.clientName && !clients.find(c => c.name === currentQuote.clientName)) {
                 clients.push({ id: Date.now(), name: currentQuote.clientName, phone: currentQuote.clientPhone, email: currentQuote.clientEmail });
                 syncConfigToCloud();
                 renderClientDatalist();
             }
 
-            // Añadir Trazabilidad
             currentQuote.lastModifiedBy = currentUser.email;
             if(!currentQuote.createdBy) currentQuote.createdBy = currentUser.email;
 
             try {
-                // Guardar en Firestore
                 await db.collection('quotes').doc(currentQuote.id).set(currentQuote);
                 
-                // Actualizar array local
                 const existingIndex = quotesHistory.findIndex(q => q.id === currentQuote.id);
                 if(existingIndex >= 0) quotesHistory[existingIndex] = JSON.parse(JSON.stringify(currentQuote));
-                else quotesHistory.unshift(JSON.parse(JSON.stringify(currentQuote))); // Añadir al inicio
+                else quotesHistory.unshift(JSON.parse(JSON.stringify(currentQuote)));
 
-                // Actualizar secuencia
                 const currentNum = parseInt(currentQuote.id.replace(settings.prefix, ''));
                 if(currentNum >= settings.nextNumber) {
                     settings.nextNumber = currentNum + 1;
@@ -838,6 +922,7 @@
                 id: `${settings.prefix}${String(settings.nextNumber).padStart(3, '0')}`,
                 type: 'COTIZACIÓN',
                 currency: 'DOP',
+                status: 'PENDIENTE',
                 date: new Date().toISOString().split('T')[0],
                 clientName: '', clientPhone: '', clientEmail: '',
                 groups: [{ id: Date.now(), category: '', isManual: false, items: [{ id: Date.now() + 1, description: '', qty: 1, price: 0 }] }],
@@ -924,11 +1009,11 @@
             const tbody = document.getElementById('clients-table-body');
             if (clients.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No hay clientes.</td></tr>`; return; }
             tbody.innerHTML = clients.map(client => `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 border-b">${client.name}</td>
-                    <td class="p-3 border-b">${client.phone || '-'}</td>
-                    <td class="p-3 border-b">${client.email || '-'}</td>
-                    <td class="p-3 border-b text-center"><button onclick="deleteClient(${client.id})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
+                <tr class="hover:bg-gray-50 bg-white">
+                    <td class="p-3 border-b border-gray-100">${client.name}</td>
+                    <td class="p-3 border-b border-gray-100">${client.phone || '-'}</td>
+                    <td class="p-3 border-b border-gray-100">${client.email || '-'}</td>
+                    <td class="p-3 border-b border-gray-100 text-center"><button onclick="deleteClient(${client.id})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
                 </tr>`).join('');
             lucide.createIcons();
         }
@@ -984,7 +1069,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             document.getElementById('quote-date').addEventListener('change', function(e) { if (currentQuote) currentQuote.date = e.target.value; });
-            setupInactivityListeners(); // Iniciar los "escuchas" de inactividad
+            setupInactivityListeners(); 
         });
 
     </script>
