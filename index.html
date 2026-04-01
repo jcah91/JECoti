@@ -150,7 +150,6 @@
                             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hola, Equipo J&E 👋</h1>
                         </div>
                         
-                        <!-- Panel de estado y Cerrar Sesión directo -->
                         <div class="flex items-center space-x-3">
                             <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
                                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -312,11 +311,11 @@
                             
                             <div class="text-gray-700 space-y-2 text-sm">
                                 <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <span class="font-bold mr-2 w-16">Fecha:</span> 
+                                    <span class="font-bold mr-2 w-20">Fecha:</span> 
                                     <input type="date" id="quote-date" class="print:appearance-none print:border-none focus:outline-none bg-transparent flex-1 border-b border-gray-200 sm:border-none pb-1 sm:pb-0 font-sans" />
                                 </div>
                                 <div class="flex flex-col sm:flex-row sm:items-center">
-                                    <span class="font-bold mr-2 w-16">Cliente:</span> 
+                                    <span class="font-bold mr-2 w-20">Cliente:</span> 
                                     <input 
                                         list="client-list" 
                                         id="quote-client-name"
@@ -326,7 +325,14 @@
                                     />
                                     <datalist id="client-list"></datalist>
                                 </div>
-                                <p id="quote-client-phone-container" class="pt-1 hidden"><span class="font-bold mr-2 w-16 inline-block">Tel:</span> <span id="quote-client-phone"></span></p>
+                                <div class="flex flex-col sm:flex-row sm:items-center">
+                                    <span class="font-bold mr-2 w-20">Moneda:</span> 
+                                    <select id="quote-currency" onchange="handleCurrencyChange(this.value)" class="border-b border-gray-300 focus:border-primary-600 outline-none print:border-none flex-1 bg-transparent pb-1 cursor-pointer print:appearance-none text-gray-700">
+                                        <option value="DOP">Pesos (RD$)</option>
+                                        <option value="USD">Dólares (US$)</option>
+                                    </select>
+                                </div>
+                                <p id="quote-client-phone-container" class="pt-1 hidden"><span class="font-bold mr-2 w-20 inline-block">Tel:</span> <span id="quote-client-phone"></span></p>
                             </div>
                         </div>
                         
@@ -443,6 +449,10 @@
                             <input type="number" id="setting-tax" class="w-full p-2 border rounded focus:ring-2 focus:ring-primary-600 outline-none" onchange="saveSettings()" />
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tasa de Cambio (1 USD = X DOP)</label>
+                            <input type="number" step="0.01" id="setting-exchange-rate" class="w-full p-2 border rounded focus:ring-2 focus:ring-primary-600 outline-none" onchange="saveSettings()" />
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Prefijo de Cotización</label>
                             <input type="text" id="setting-prefix" class="w-full p-2 border rounded focus:ring-2 focus:ring-primary-600 outline-none" onchange="saveSettings()" />
                         </div>
@@ -487,7 +497,7 @@
         let currentUser = null;
         let clients = [];
         let categories = ['Impresión de lona', 'Traslado', 'Montaje', 'Desmontaje', 'Mano de obra', 'Decoración BackDrop', 'Personalización'];
-        let settings = { taxRate: 18, prefix: 'QT', nextNumber: 1 };
+        let settings = { taxRate: 18, prefix: 'QT', nextNumber: 1, exchangeRate: 59.00 };
         let quotesHistory = [];
         let currentQuote = null;
 
@@ -578,7 +588,7 @@
                     const data = doc.data();
                     if(data.clients) clients = data.clients;
                     if(data.categories) categories = data.categories;
-                    if(data.settings) settings = data.settings;
+                    if(data.settings) settings = { ...settings, ...data.settings };
                 } else {
                     // Si es la primera vez, crear el documento en la nube
                     await docRef.set({ clients, categories, settings });
@@ -615,8 +625,14 @@
 
         // --- RESTO DE LA LÓGICA DE LA APP (Adaptada) ---
         
-        // Utilidades
-        const formatCurrency = (amount) => new Intl.NumberFormat('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 }).format(amount).replace('DOP', 'RD$');
+        // Utilidades: Modificado para soportar Pesos y Dólares
+        const formatCurrency = (amount, currency = 'DOP') => {
+            if (currency === 'USD') {
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
+            }
+            return new Intl.NumberFormat('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 }).format(amount).replace('DOP', 'RD$');
+        };
+
         function showToast(message) {
             const t = document.getElementById('toast');
             document.getElementById('toast-message').textContent = message;
@@ -671,7 +687,7 @@
                     <td class="py-3 text-sm text-gray-600">${q.date}</td>
                     <td class="py-3 text-sm text-gray-800">${q.clientName || '-'}</td>
                     <td class="py-3 text-xs text-gray-400">${(q.lastModifiedBy || q.createdBy || '').split('@')[0]}</td>
-                    <td class="py-3 text-sm font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q))}</td>
+                    <td class="py-3 text-sm font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q), q.currency || 'DOP')}</td>
                 </tr>
             `).join('');
         }
@@ -695,7 +711,7 @@
                     <td class="p-3 text-gray-600">${q.date}</td>
                     <td class="p-3 text-gray-800">${q.clientName || '-'}</td>
                     <td class="p-3 text-xs text-gray-500">${(q.lastModifiedBy || q.createdBy || '').split('@')[0]}</td>
-                    <td class="p-3 font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q))}</td>
+                    <td class="p-3 font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q), q.currency || 'DOP')}</td>
                     <td class="p-3 text-center space-x-2">
                         <button onclick="loadQuote('${q.id}')" class="text-primary-800 hover:text-primary-900 p-1"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
                         <button onclick="deleteQuote('${q.id}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
@@ -723,6 +739,7 @@
             if (quoteToLoad) {
                 currentQuote = JSON.parse(JSON.stringify(quoteToLoad));
                 if(!currentQuote.type) currentQuote.type = 'COTIZACIÓN';
+                if(!currentQuote.currency) currentQuote.currency = 'DOP'; // Fallback para los viejos
                 initQuoteView();
                 switchTab('cotizacion');
             }
@@ -736,6 +753,7 @@
             document.getElementById('quote-apply-tax').checked = currentQuote.applyTax;
             document.getElementById('display-tax-label').textContent = `Impuestos (${settings.taxRate}%)`;
             document.getElementById('document-type-select').value = currentQuote.type || 'COTIZACIÓN';
+            document.getElementById('quote-currency').value = currentQuote.currency || 'DOP';
             
             // Firma de impresión
             const stamp = currentQuote.createdBy ? `Doc. original por: ${currentQuote.createdBy.split('@')[0]}` : '';
@@ -746,6 +764,13 @@
         }
 
         function handleDocumentTypeChange(value) { if (currentQuote) currentQuote.type = value; }
+        
+        function handleCurrencyChange(value) { 
+            if (currentQuote) {
+                currentQuote.currency = value;
+                renderItems(); // Refresca los simbolos y totales
+            }
+        }
 
         function handleClientSelect(name) {
             currentQuote.clientName = name;
@@ -811,7 +836,9 @@
         function handleNewQuote() {
             currentQuote = {
                 id: `${settings.prefix}${String(settings.nextNumber).padStart(3, '0')}`,
-                type: 'COTIZACIÓN', date: new Date().toISOString().split('T')[0],
+                type: 'COTIZACIÓN',
+                currency: 'DOP',
+                date: new Date().toISOString().split('T')[0],
                 clientName: '', clientPhone: '', clientEmail: '',
                 groups: [{ id: Date.now(), category: '', isManual: false, items: [{ id: Date.now() + 1, description: '', qty: 1, price: 0 }] }],
                 applyTax: true
@@ -831,12 +858,19 @@
             const g = currentQuote.groups.find(g => g.id === groupId); if(!g) return;
             const i = g.items.find(i => i.id === itemId); if(!i) return;
             i[field] = value;
-            if(field==='qty'||field==='price'){ document.getElementById(`total-${i.id}`).textContent = formatCurrency(i.qty * i.price); updateCalculations(); }
+            if(field==='qty'||field==='price'){ 
+                const curr = currentQuote.currency || 'DOP';
+                document.getElementById(`total-${i.id}`).textContent = formatCurrency(i.qty * i.price, curr); 
+                updateCalculations(); 
+            }
         }
 
         function renderItems() {
             const container = document.getElementById('items-container');
             container.innerHTML = '';
+            const curr = currentQuote.currency || 'DOP';
+            const currSymbol = curr === 'USD' ? 'US$' : 'RD$';
+
             currentQuote.groups.forEach(group => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = "mb-6 bg-gray-50 md:bg-transparent rounded-lg md:rounded-none border border-gray-200 md:border-none p-4 md:p-0 print:border-none print:p-0 print:mb-6 print:break-inside-avoid";
@@ -852,8 +886,8 @@
                         <div class="w-full md:col-span-6 print:col-span-6 flex flex-col pr-6 md:pr-0 print:pr-0 pl-1 md:pl-2 print:pl-2"><input class="text-sm md:text-base text-gray-600 outline-none w-full print:border-none bg-transparent placeholder-gray-400" placeholder="Descripción del servicio..." value="${item.description}" oninput="updateItemField(${group.id}, ${item.id}, 'description', this.value)"></div>
                         <div class="w-full md:col-span-6 print:col-span-6 flex flex-row justify-between items-center md:grid md:grid-cols-6 print:grid print:grid-cols-6 print:gap-4 md:gap-4 pl-1 md:pl-0 print:pl-0">
                             <div class="flex flex-col items-start md:items-center print:items-center md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Cant.</span><input type="number" min="1" class="w-14 md:w-16 text-left md:text-center print:text-center outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.qty}" oninput="updateItemField(${group.id}, ${item.id}, 'qty', this.value)"></div>
-                            <div class="flex flex-col items-center md:items-end print:items-end md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Precio</span><div class="flex items-center"><span class="text-gray-500 mr-1 print:hidden text-xs md:text-sm">$</span><input type="number" class="w-16 md:w-20 text-right outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.price}" oninput="updateItemField(${group.id}, ${item.id}, 'price', this.value)"></div></div>
-                            <div class="flex flex-col items-end md:col-span-2 print:col-span-2 print:items-end"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Total</span><div id="total-${item.id}" class="text-right text-gray-800 font-medium text-sm md:text-base print:text-base">${formatCurrency(item.qty * item.price)}</div></div>
+                            <div class="flex flex-col items-center md:items-end print:items-end md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Precio</span><div class="flex items-center"><span class="text-gray-500 mr-1 print:hidden text-xs md:text-sm">${currSymbol}</span><input type="number" class="w-16 md:w-20 text-right outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.price}" oninput="updateItemField(${group.id}, ${item.id}, 'price', this.value)"></div></div>
+                            <div class="flex flex-col items-end md:col-span-2 print:col-span-2 print:items-end"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Total</span><div id="total-${item.id}" class="text-right text-gray-800 font-medium text-sm md:text-base print:text-base">${formatCurrency(item.qty * item.price, curr)}</div></div>
                         </div>
                         <button onclick="removeItemFromGroup(${group.id}, ${item.id})" class="absolute right-0 top-3 md:top-2 text-red-400 opacity-100 md:opacity-0 group-hover/item:opacity-100 transition-opacity print:hidden p-1 bg-red-50 md:bg-transparent rounded-md"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>`).join('');
@@ -874,9 +908,11 @@
             let subtotal = 0;
             currentQuote.groups.forEach(g => g.items.forEach(i => subtotal += (Number(i.qty) * Number(i.price))));
             const taxes = currentQuote.applyTax ? subtotal * (settings.taxRate / 100) : 0;
-            document.getElementById('display-subtotal').textContent = formatCurrency(subtotal);
-            document.getElementById('display-tax-amount').textContent = formatCurrency(taxes);
-            document.getElementById('display-total').textContent = formatCurrency(subtotal + taxes);
+            const curr = currentQuote.currency || 'DOP';
+
+            document.getElementById('display-subtotal').textContent = formatCurrency(subtotal, curr);
+            document.getElementById('display-tax-amount').textContent = formatCurrency(taxes, curr);
+            document.getElementById('display-total').textContent = formatCurrency(subtotal + taxes, curr);
         }
 
         function renderClientDatalist() {
@@ -926,11 +962,13 @@
         function renderSettings() {
             document.getElementById('setting-tax').value = settings.taxRate;
             document.getElementById('setting-prefix').value = settings.prefix;
+            document.getElementById('setting-exchange-rate').value = settings.exchangeRate || 59.00;
         }
 
         function saveSettings() {
             settings.taxRate = Number(document.getElementById('setting-tax').value);
             settings.prefix = document.getElementById('setting-prefix').value;
+            settings.exchangeRate = Number(document.getElementById('setting-exchange-rate').value);
             persistData();
             document.getElementById('display-tax-label').textContent = `Impuestos (${settings.taxRate}%)`;
             if (currentQuote) updateCalculations();
