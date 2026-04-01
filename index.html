@@ -144,14 +144,22 @@
                 <div class="max-w-6xl mx-auto p-4 md:p-8 mt-0 md:mt-4 print:hidden">
                     <div class="flex items-center justify-between mb-8">
                         <div class="flex items-center space-x-4">
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm md:hidden">
+                            <!-- Removido el md:hidden para que el menú se pueda abrir en PC también -->
+                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm">
                                 <i data-lucide="menu" class="w-6 h-6"></i>
                             </button>
                             <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hola, Equipo J&E 👋</h1>
                         </div>
-                        <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span>Nube Sincronizada</span>
+                        
+                        <!-- Panel de estado y Cerrar Sesión directo -->
+                        <div class="flex items-center space-x-3">
+                            <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <span>Nube Sincronizada</span>
+                            </div>
+                            <button onclick="handleLogout()" class="flex items-center space-x-2 bg-red-50 text-red-600 px-4 py-2 rounded-full border border-red-100 hover:bg-red-100 transition shadow-sm font-medium text-sm" title="Cerrar sesión">
+                                <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden sm:inline">Cerrar sesión</span>
+                            </button>
                         </div>
                     </div>
 
@@ -269,7 +277,8 @@
                     
                     <div class="flex flex-wrap justify-between items-center mb-6 md:mb-8 gap-3 print:hidden">
                         <div class="flex items-center space-x-2">
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full bg-gray-50 md:hidden">
+                            <!-- Removido el md:hidden para que el menú sea accesible -->
+                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full bg-gray-50">
                                 <i data-lucide="menu" class="w-6 h-6"></i>
                             </button>
                             <button onclick="switchTab('dashboard')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full hidden md:flex items-center space-x-1 text-sm font-medium">
@@ -324,7 +333,6 @@
                         </div>
                         
                         <div class="text-left md:text-right w-full md:w-auto flex flex-row md:flex-col justify-between items-center md:items-end order-1 md:order-2 pb-4 border-b md:border-none border-gray-100">
-                            <!-- ERROR FIX: Escapado correctamente de las comillas HTML (' a &quot;) para evitar SyntaxError de JavaScript -->
                             <img src="JEBD.png" alt="J&E Backdrops Logo" class="h-16 md:h-24 object-contain" onerror="this.onerror=null; this.outerHTML='<h2 class=&quot;text-xl md:text-2xl font-extrabold text-gray-800&quot;>J&E Backdrops</h2>';">
                         </div>
                     </div>
