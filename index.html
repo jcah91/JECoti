@@ -56,16 +56,15 @@
         #toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; opacity: 0; transform: translateY(20px); pointer-events: none; }
         #toast.show { opacity: 1; transform: translateY(0); }
         
-        /* Loader de carga */
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #d1a751; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Selectores de estado */
         .status-select { appearance: none; -webkit-appearance: none; padding-right: 1.5rem; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50 font-sans text-gray-900 flex flex-col">
 
+    <!-- PANTALLA DE AUTENTICACIÓN -->
     <div id="auth-screen" class="fixed inset-0 bg-gray-900 z-[100] flex items-center justify-center">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-4 transform transition-all">
             <div class="text-center mb-8">
@@ -95,9 +94,36 @@
         </div>
     </div>
 
+    <!-- CONTENEDOR DE LA APLICACIÓN -->
     <div id="app-container" class="hidden flex-1 flex flex-col">
+        
+        <!-- HEADER GLOBAL (FIJO) -->
+        <header class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-40 print:hidden shadow-sm">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors" title="Menú">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h2 class="text-lg font-bold text-gray-800 hidden sm:block">J&E Backdrops</h2>
+                </div>
+                
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <div class="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="hidden xs:inline">Sistema En Línea</span>
+                        <span class="xs:hidden">Línea</span>
+                    </div>
+                    <button onclick="handleLogout()" class="flex items-center space-x-2 bg-red-50 text-red-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-red-100 hover:bg-red-100 transition shadow-sm font-medium text-xs sm:text-sm">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Cerrar sesión</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
         <div id="menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden print:hidden" onclick="toggleMenu()"></div>
 
+        <!-- SIDEBAR -->
         <div id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full w-64 bg-gray-900 text-white transition-transform duration-300 ease-in-out z-50 print:hidden flex flex-col">
             <div class="p-5 flex justify-between items-center border-b border-gray-700 bg-gray-950">
                 <h2 class="text-xl font-bold text-primary-500">J&E Panel</h2>
@@ -106,12 +132,9 @@
             
             <div class="p-4 border-b border-gray-800 bg-gray-800 flex items-center justify-between">
                 <div class="overflow-hidden">
-                    <p class="text-xs text-gray-400">Sesión iniciada como:</p>
+                    <p class="text-xs text-gray-400">Usuario:</p>
                     <p id="current-user-email" class="text-sm font-medium text-primary-300 truncate"></p>
                 </div>
-                <button onclick="handleLogout()" class="text-red-400 hover:text-red-300 p-2 rounded" title="Cerrar sesión">
-                    <i data-lucide="log-out" class="w-5 h-5"></i>
-                </button>
             </div>
 
             <nav class="p-4 space-y-2 flex-1 overflow-y-auto">
@@ -142,42 +165,22 @@
             </nav>
         </div>
 
-        <main class="transition-all duration-300 flex-1">
+        <main class="transition-all duration-300 flex-1 overflow-y-auto">
+            
             <!-- VISTA: DASHBOARD MODERNO -->
             <div id="tab-dashboard" class="tab-content active">
-                <div class="max-w-6xl mx-auto p-4 md:p-8 mt-0 md:mt-4 print:hidden">
+                <div class="max-w-6xl mx-auto p-4 md:p-8 mt-0 print:hidden">
                     
-                    <!-- Header Top -->
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center space-x-4">
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-200 rounded-full bg-white shadow-sm">
-                                <i data-lucide="menu" class="w-6 h-6"></i>
-                            </button>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <div class="hidden md:flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span>Sistema En Línea</span>
-                            </div>
-                            <button onclick="handleLogout()" class="flex items-center space-x-2 bg-red-50 text-red-600 px-4 py-2 rounded-full border border-red-100 hover:bg-red-100 transition shadow-sm font-medium text-sm" title="Cerrar sesión">
-                                <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden sm:inline">Cerrar sesión</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Hero Banner -->
                     <div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
                         <div class="relative z-10">
                             <h1 class="text-3xl md:text-4xl font-extrabold mb-2 text-primary-400">¡Hola, Equipo J&E! 👋</h1>
                             <p class="text-gray-300 text-lg max-w-xl">Bienvenido al panel de control. Gestiona tus cotizaciones, analiza tu rendimiento y cierra más ventas.</p>
                         </div>
-                        <!-- Decoración de fondo -->
                         <div class="absolute right-0 top-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
                             <i data-lucide="trending-up" class="w-64 h-64"></i>
                         </div>
                     </div>
 
-                    <!-- Tarjetas de Rendimiento -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                             <div class="flex justify-between items-start mb-4">
@@ -224,7 +227,6 @@
                         </div>
                     </div>
 
-                    <!-- Acciones Principales Grandes -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <button onclick="switchTab('cotizacion'); handleNewQuote();" class="group relative bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-left hover:shadow-md hover:border-primary-400 transition-all overflow-hidden">
                             <div class="relative z-10 flex items-center justify-between">
@@ -250,26 +252,19 @@
                             </div>
                         </button>
                     </div>
-
                 </div>
             </div>
 
-            <!-- VISTA: HISTORIAL DE COTIZACIONES -->
+            <!-- VISTA: HISTORIAL -->
             <div id="tab-historial" class="tab-content">
-                <div class="max-w-7xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
+                <div class="max-w-7xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-4 min-h-screen md:min-h-0 print:hidden">
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-                        <div class="flex items-center">
-                            <button onclick="switchTab('dashboard')" class="mr-3 p-2 bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors">
-                                <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                            </button>
-                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">Historial de Documentos</h2>
-                        </div>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">Historial de Documentos</h2>
                         <button onclick="switchTab('cotizacion'); handleNewQuote();" class="bg-primary text-gray-900 font-medium px-4 py-2 rounded flex items-center space-x-2 hover:bg-primary-400 transition text-sm md:text-base whitespace-nowrap">
                             <i data-lucide="plus" class="w-4 h-4"></i> <span>Nuevo Documento</span>
                         </button>
                     </div>
 
-                    <!-- BARRA DE FILTROS -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -309,27 +304,17 @@
                                     <th class="p-3 border-b border-gray-200 font-semibold text-center w-24 rounded-tr-lg">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="historial-table-body">
-                                <!-- JS renderiza historial aquí -->
-                            </tbody>
+                            <tbody id="historial-table-body"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
             
-            <!-- VISTA: COTIZACIÓN (EDITOR) -->
+            <!-- VISTA: EDITOR -->
             <div id="tab-cotizacion" class="tab-content">
-                <div class="max-w-[850px] mx-auto bg-white p-4 sm:p-8 md:p-14 shadow-lg min-h-screen print:p-0 print:shadow-none print:w-full">
+                <div class="max-w-[850px] mx-auto bg-white p-4 sm:p-8 md:p-14 shadow-lg min-h-screen print:p-0 print:shadow-none print:w-full md:mt-4 md:mb-8 md:rounded-lg">
                     
-                    <div class="flex flex-wrap justify-between items-center mb-6 md:mb-8 gap-3 print:hidden">
-                        <div class="flex items-center space-x-2">
-                            <button onclick="toggleMenu()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full bg-gray-50 md:hidden">
-                                <i data-lucide="menu" class="w-6 h-6"></i>
-                            </button>
-                            <button onclick="switchTab('historial')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-full hidden md:flex items-center space-x-1 text-sm font-medium">
-                                <i data-lucide="arrow-left" class="w-4 h-4"></i> <span>Volver</span>
-                            </button>
-                        </div>
+                    <div class="flex flex-wrap justify-end items-center mb-6 md:mb-8 gap-3 print:hidden">
                         <div class="flex flex-1 sm:flex-none justify-end space-x-2">
                             <button onclick="handleNewQuote()" class="flex-1 sm:flex-none flex items-center justify-center space-x-1 text-gray-900 bg-primary hover:bg-primary-400 px-3 py-2.5 rounded font-medium transition text-sm md:text-base" title="Crear un documento nuevo en blanco">
                                 <i data-lucide="file-plus" class="w-4 h-4 md:w-5 md:h-5"></i> <span class="hidden sm:inline">Nuevo</span>
@@ -346,9 +331,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start mb-8 md:mb-12 gap-6 md:gap-0">
                         <div class="w-full md:w-auto order-2 md:order-1">
                             <div class="mb-1 md:mb-2 relative inline-block group">
-                                <select id="document-type-select" 
-                                        onchange="handleDocumentTypeChange(this.value)" 
-                                        class="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-widest outline-none bg-transparent cursor-pointer hover:bg-gray-50 rounded px-2 -ml-2 print:appearance-none">
+                                <select id="document-type-select" onchange="handleDocumentTypeChange(this.value)" class="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-widest outline-none bg-transparent cursor-pointer hover:bg-gray-50 rounded px-2 -ml-2 print:appearance-none">
                                     <option value="COTIZACIÓN">COTIZACIÓN</option>
                                     <option value="FACTURA">FACTURA</option>
                                 </select>
@@ -368,13 +351,7 @@
                                 </div>
                                 <div class="flex flex-col sm:flex-row sm:items-center">
                                     <span class="font-bold mr-2 w-20">Cliente:</span> 
-                                    <input 
-                                        list="client-list" 
-                                        id="quote-client-name"
-                                        class="border-b border-gray-300 focus:border-primary-600 outline-none print:border-none flex-1 bg-transparent pb-1"
-                                        placeholder="Nombre del cliente..."
-                                        oninput="handleClientSelect(this.value)"
-                                    />
+                                    <input list="client-list" id="quote-client-name" class="border-b border-gray-300 focus:border-primary-600 outline-none print:border-none flex-1 bg-transparent pb-1" placeholder="Nombre del cliente..." oninput="handleClientSelect(this.value)" />
                                     <datalist id="client-list"></datalist>
                                 </div>
                                 <div class="flex flex-col sm:flex-row sm:items-center">
@@ -401,8 +378,7 @@
                             <div class="col-span-2 print:col-span-2 text-right">Total</div>
                         </div>
 
-                        <div id="items-container" class="space-y-6 md:space-y-4 print:space-y-4">
-                            </div>
+                        <div id="items-container" class="space-y-6 md:space-y-4 print:space-y-4"></div>
                     </div>
 
                     <div class="flex justify-end mt-8 md:mt-12">
@@ -434,20 +410,15 @@
 
             <!-- VISTA: CLIENTES -->
             <div id="tab-clientes" class="tab-content">
-                <div class="max-w-4xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
-                    <div class="flex items-center mb-6">
-                        <button onclick="switchTab('dashboard')" class="mr-3 p-2 bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors">
-                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                        </button>
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">Directorio de Clientes</h2>
-                    </div>
+                <div class="max-w-4xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-4 min-h-screen md:min-h-0 print:hidden">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">Directorio de Clientes</h2>
 
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6 flex flex-col md:flex-row gap-3">
                         <input type="text" id="new-client-name" placeholder="Nombre completo *" class="flex-1 p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600">
                         <input type="text" id="new-client-phone" placeholder="Teléfono" class="flex-1 p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600">
                         <input type="email" id="new-client-email" placeholder="Email" class="flex-1 p-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-primary-600">
                         <button onclick="addClient()" class="bg-primary text-gray-900 px-4 py-2 rounded hover:bg-primary-400 flex justify-center items-center gap-2 font-medium transition-colors">
-                            <i data-lucide="plus" class="w-5 h-5"></i> <span class="md:hidden">Añadir Cliente</span>
+                            <i data-lucide="plus" class="w-5 h-5"></i> <span>Añadir Cliente</span>
                         </button>
                     </div>
 
@@ -455,14 +426,13 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-gray-100 text-gray-700 text-sm">
-                                    <th class="p-3 border-b border-gray-200 font-semibold rounded-tl-lg">Nombre</th>
-                                    <th class="p-3 border-b border-gray-200 font-semibold">Teléfono</th>
-                                    <th class="p-3 border-b border-gray-200 font-semibold">Email</th>
-                                    <th class="p-3 border-b border-gray-200 font-semibold w-16 rounded-tr-lg">Acciones</th>
+                                    <th class="p-3 border-b border-primary-300">Nombre</th>
+                                    <th class="p-3 border-b border-primary-300">Teléfono</th>
+                                    <th class="p-3 border-b border-primary-300">Email</th>
+                                    <th class="p-3 border-b border-primary-300 w-16 text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="clients-table-body">
-                                </tbody>
+                            <tbody id="clients-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -470,33 +440,22 @@
 
             <!-- VISTA: CATEGORÍAS -->
             <div id="tab-categorias" class="tab-content">
-                <div class="max-w-2xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
-                    <div class="flex items-center mb-6">
-                        <button onclick="switchTab('dashboard')" class="mr-3 p-2 bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors">
-                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                        </button>
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">Categorías de Servicio Guardadas</h2>
-                    </div>
+                <div class="max-w-2xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-4 min-h-screen md:min-h-0 print:hidden">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">Categorías de Servicio</h2>
                     <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-6">
-                        <input type="text" id="new-category-input" placeholder="Añadir una nueva categoría predeterminada..." class="flex-1 p-3 md:p-2 border rounded focus:ring-2 focus:ring-primary-600 outline-none" />
+                        <input type="text" id="new-category-input" placeholder="Nueva categoría..." class="flex-1 p-3 md:p-2 border rounded focus:ring-2 focus:ring-primary-600 outline-none" />
                         <button onclick="addCategory()" class="bg-primary text-gray-900 font-medium px-4 py-2 rounded hover:bg-primary-400 flex justify-center items-center">
                             <i data-lucide="plus" class="w-5 h-5"></i>
                         </button>
                     </div>
-                    <ul id="categories-list" class="space-y-2">
-                        </ul>
+                    <ul id="categories-list" class="space-y-2"></ul>
                 </div>
             </div>
 
             <!-- VISTA: AJUSTES -->
             <div id="tab-ajustes" class="tab-content">
-                <div class="max-w-2xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-8 min-h-screen md:min-h-0 print:hidden">
-                    <div class="flex items-center mb-6">
-                        <button onclick="switchTab('dashboard')" class="mr-3 p-2 bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors">
-                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                        </button>
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">Ajustes del Sistema</h2>
-                    </div>
+                <div class="max-w-2xl mx-auto p-4 md:p-8 bg-white md:rounded-lg md:shadow mt-0 md:mt-4 min-h-screen md:min-h-0 print:hidden">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">Ajustes del Sistema</h2>
                     
                     <div class="space-y-6 mb-8">
                         <div>
@@ -514,9 +473,8 @@
                     </div>
 
                     <div class="border-t pt-6">
-                        <h3 class="text-lg font-bold mb-4 text-gray-800">Respaldo Manual (Opcional)</h3>
-                        <p class="text-sm text-gray-500 mb-4">Tus datos ahora se guardan automáticamente en la nube. Sin embargo, puedes descargar una copia de seguridad física si lo deseas.</p>
-                        <button onclick="exportData()" class="flex items-center justify-center space-x-2 bg-gray-800 text-white px-4 py-3 md:py-2 rounded hover:bg-gray-900 w-full sm:w-auto">
+                        <h3 class="text-lg font-bold mb-4 text-gray-800">Respaldo Manual</h3>
+                        <button onclick="exportData()" class="flex items-center justify-center space-x-2 bg-gray-800 text-white px-4 py-3 md:py-2 rounded hover:bg-gray-900 w-full sm:w-auto transition-colors">
                             <i data-lucide="download" class="w-5 h-5"></i> <span>Descargar Backup JSON</span>
                         </button>
                     </div>
@@ -525,14 +483,13 @@
         </main>
     </div>
 
+    <!-- TOAST NOTIFICACIONES -->
     <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded shadow-lg z-50 flex items-center space-x-2">
         <span id="toast-message">Notificación</span>
     </div>
 
     <script>
-        // ======================================================================
-        // 1. CONFIGURACIÓN DE FIREBASE
-        // ======================================================================
+        // CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyD2cpzWK-dLz3CqLUxKiTficEiCFCvFIm0",
             authDomain: "je-backdrops-app.firebaseapp.com",
@@ -541,14 +498,11 @@
             messagingSenderId: "699600616213",
             appId: "1:699600616213:web:a73f535a27b455a3c6471c"
         };
-        // ======================================================================
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variables de estado
         let currentUser = null;
         let clients = [];
         let categories = ['Impresión de lona', 'Traslado', 'Montaje', 'Desmontaje', 'Mano de obra', 'Decoración BackDrop', 'Personalización'];
@@ -556,7 +510,6 @@
         let quotesHistory = [];
         let currentQuote = null;
 
-        // --- SISTEMA DE INACTIVIDAD ---
         const INACTIVITY_TIME = 15 * 60 * 1000;
         let inactivityTimer;
 
@@ -573,13 +526,9 @@
         }
 
         function setupInactivityListeners() {
-            const activityEvents = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'];
-            activityEvents.forEach(eventName => {
-                document.addEventListener(eventName, resetInactivityTimer, true);
-            });
+            ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'].forEach(ev => document.addEventListener(ev, resetInactivityTimer, true));
         }
 
-        // --- SISTEMA DE AUTENTICACIÓN ---
         auth.onAuthStateChanged(user => {
             const authScreen = document.getElementById('auth-screen');
             const appContainer = document.getElementById('app-container');
@@ -589,12 +538,9 @@
             if (user) {
                 currentUser = user;
                 document.getElementById('current-user-email').textContent = user.email;
-                
                 resetInactivityTimer();
-                
                 form.classList.add('hidden');
                 loading.classList.remove('hidden');
-                
                 loadDataFromFirestore().then(() => {
                     authScreen.classList.add('hidden');
                     appContainer.classList.remove('hidden');
@@ -618,7 +564,6 @@
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-password').value;
             const errP = document.getElementById('login-error');
-            
             try {
                 errP.classList.add('hidden');
                 await auth.signInWithEmailAndPassword(email, pass);
@@ -628,16 +573,12 @@
             }
         }
 
-        function handleLogout() {
-            auth.signOut();
-        }
+        function handleLogout() { auth.signOut(); }
 
-        // --- SINCRONIZACIÓN CON FIRESTORE (LA NUBE) ---
         async function loadDataFromFirestore() {
             try {
                 const docRef = db.collection('companyData').doc('mainConfig');
                 const doc = await docRef.get();
-                
                 if (doc.exists) {
                     const data = doc.data();
                     if(data.clients) clients = data.clients;
@@ -646,44 +587,31 @@
                 } else {
                     await docRef.set({ clients, categories, settings });
                 }
-
                 const snapshot = await db.collection('quotes').orderBy('id', 'desc').get();
                 quotesHistory = snapshot.docs.map(d => d.data());
-
                 renderClientDatalist();
                 handleNewQuote();
-            } catch (error) {
-                console.error("Error cargando datos:", error);
+            } catch (e) {
+                console.error(e);
                 showToast("Error de conexión a la nube");
             }
         }
 
         async function syncConfigToCloud() {
             if (!currentUser) return;
-            try {
-                await db.collection('companyData').doc('mainConfig').set({
-                    clients, categories, settings
-                });
-            } catch (error) {}
+            try { await db.collection('companyData').doc('mainConfig').set({ clients, categories, settings }); } catch (e) {}
         }
 
-        function persistData() {
-            syncConfigToCloud();
-        }
-
-        // --- UTILIDADES ---
         const formatCurrency = (amount, currency = 'DOP') => {
-            if (currency === 'USD') {
-                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
-            }
+            if (currency === 'USD') return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
             return new Intl.NumberFormat('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 }).format(amount).replace('DOP', 'RD$');
         };
 
         const getStatusColor = (status) => {
             switch(status) {
-                case 'CONFIRMADA': return 'bg-green-100 text-green-800';
-                case 'RECHAZADA': return 'bg-red-100 text-red-800';
-                default: return 'bg-yellow-100 text-yellow-800'; // PENDIENTE
+                case 'CONFIRMADA': return 'bg-green-100 text-green-800 border-green-200';
+                case 'RECHAZADA': return 'bg-red-100 text-red-800 border-red-200';
+                default: return 'bg-yellow-100 text-yellow-800 border-yellow-200';
             }
         };
 
@@ -713,9 +641,9 @@
                 activeBtn.classList.remove('hover:bg-gray-800', 'text-gray-300');
                 activeBtn.classList.add('bg-primary', 'text-gray-900', 'font-medium');
             }
-            if (window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) {
-                toggleMenu();
-            }
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full')) toggleMenu();
+            
             if (tabId === 'dashboard') renderDashboard();
             if (tabId === 'historial') renderHistorial();
             if (tabId === 'clientes') renderClients();
@@ -723,12 +651,10 @@
             if (tabId === 'ajustes') renderSettings();
         }
 
-        // --- DASHBOARD ---
         function renderDashboard() {
             const total = quotesHistory.length;
             const confirmadas = quotesHistory.filter(q => q.status === 'CONFIRMADA').length;
             const conversionRate = total > 0 ? Math.round((confirmadas / total) * 100) : 0;
-
             document.getElementById('dash-total-quotes').textContent = total;
             document.getElementById('dash-total-clients').textContent = clients.length;
             document.getElementById('dash-confirmed-quotes').textContent = confirmadas;
@@ -741,31 +667,25 @@
             return subtotal + (quote.applyTax ? subtotal * (settings.taxRate / 100) : 0);
         }
 
-        // --- HISTORIAL CON FILTROS ---
         function renderHistorial() {
             const tbody = document.getElementById('historial-table-body');
-            
-            // Leer filtros
             const search = document.getElementById('filter-search')?.value.toLowerCase() || '';
             const date = document.getElementById('filter-date')?.value || '';
             const status = document.getElementById('filter-status')?.value || '';
             const user = document.getElementById('filter-user')?.value.toLowerCase() || '';
 
-            // Aplicar filtros
             let filtered = quotesHistory.filter(q => {
                 const qStatus = q.status || 'PENDIENTE';
                 const editor = (q.lastModifiedBy || q.createdBy || '').split('@')[0].toLowerCase();
-                
                 const matchSearch = q.id.toLowerCase().includes(search) || (q.clientName && q.clientName.toLowerCase().includes(search));
                 const matchDate = date ? q.date === date : true;
                 const matchStatus = status ? qStatus === status : true;
                 const matchUser = user ? editor.includes(user) : true;
-
                 return matchSearch && matchDate && matchStatus && matchUser;
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 bg-white">No se encontraron documentos con esos filtros.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 bg-white">No se encontraron documentos.</td></tr>`;
                 return;
             }
 
@@ -773,60 +693,51 @@
                 const currentStatus = q.status || 'PENDIENTE';
                 return `
                 <tr class="hover:bg-gray-50 transition border-b border-gray-100 bg-white">
-                    <td class="p-3 font-medium text-primary-800 cursor-pointer" onclick="loadQuote('${q.id}')">${q.id} <br><span class="text-xs text-gray-400 font-normal">${q.type || 'COTIZACIÓN'}</span></td>
-                    <td class="p-3 text-gray-600">${q.date}</td>
-                    <td class="p-3 text-gray-800 font-medium">${q.clientName || '-'}</td>
+                    <td class="p-3 font-medium text-primary-800 cursor-pointer" onclick="loadQuote('${q.id}')">${q.id} <br><span class="text-[10px] text-gray-400 font-normal uppercase">${q.type || 'COTIZACIÓN'}</span></td>
+                    <td class="p-3 text-gray-600 text-sm">${q.date}</td>
+                    <td class="p-3 text-gray-800 font-medium text-sm">${q.clientName || '-'}</td>
                     <td class="p-3">
-                        <select onchange="changeQuoteStatus('${q.id}', this.value)" class="status-select outline-none font-bold text-xs px-3 py-1.5 rounded-full cursor-pointer ${getStatusColor(currentStatus)}">
+                        <select onchange="changeQuoteStatus('${q.id}', this.value)" class="status-select outline-none font-bold text-[10px] px-2 py-1 rounded-full border cursor-pointer ${getStatusColor(currentStatus)}">
                             <option value="PENDIENTE" ${currentStatus === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
                             <option value="CONFIRMADA" ${currentStatus === 'CONFIRMADA' ? 'selected' : ''}>CONFIRMADA</option>
                             <option value="RECHAZADA" ${currentStatus === 'RECHAZADA' ? 'selected' : ''}>RECHAZADA</option>
                         </select>
                     </td>
-                    <td class="p-3 text-xs text-gray-500">${(q.lastModifiedBy || q.createdBy || '').split('@')[0]}</td>
-                    <td class="p-3 font-bold text-gray-800 text-right">${formatCurrency(calculateTotalFromQuote(q), q.currency || 'DOP')}</td>
+                    <td class="p-3 text-[10px] text-gray-500 truncate max-w-[80px]">${(q.lastModifiedBy || q.createdBy || '').split('@')[0]}</td>
+                    <td class="p-3 font-bold text-gray-800 text-right text-sm">${formatCurrency(calculateTotalFromQuote(q), q.currency || 'DOP')}</td>
                     <td class="p-3 text-center space-x-2">
-                        <button onclick="loadQuote('${q.id}')" class="text-primary-800 hover:text-primary-900 p-1" title="Editar / Ver"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
-                        <button onclick="deleteQuote('${q.id}')" class="text-red-500 hover:text-red-700 p-1" title="Eliminar"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                        <button onclick="loadQuote('${q.id}')" class="text-primary-800 hover:text-primary-900 p-1"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                        <button onclick="deleteQuote('${q.id}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </td>
-                </tr>
-            `}).join('');
+                </tr>`}).join('');
             lucide.createIcons();
         }
 
         async function changeQuoteStatus(id, newStatus) {
             try {
-                // Actualizar en Firebase
                 await db.collection('quotes').doc(id).update({ status: newStatus });
-                // Actualizar local
-                const quote = quotesHistory.find(q => q.id === id);
-                if (quote) quote.status = newStatus;
-                
+                const q = quotesHistory.find(q => q.id === id);
+                if (q) q.status = newStatus;
                 renderHistorial();
                 showToast('Estado actualizado');
-            } catch (e) {
-                console.error(e);
-                showToast('Error al actualizar estado');
-            }
+            } catch (e) { showToast('Error al actualizar'); }
         }
 
         async function deleteQuote(id) {
-            if(confirm('¿Seguro de eliminar este documento en la nube?')) {
+            if(confirm('¿Seguro de eliminar este documento?')) {
                 try {
                     await db.collection('quotes').doc(id).delete();
                     quotesHistory = quotesHistory.filter(q => q.id !== id);
                     renderHistorial();
-                    showToast('Documento borrado de la nube');
-                } catch (e) {
-                    showToast('Error al borrar');
-                }
+                    showToast('Eliminado');
+                } catch (e) { showToast('Error'); }
             }
         }
 
         function loadQuote(id) {
-            const quoteToLoad = quotesHistory.find(q => q.id === id);
-            if (quoteToLoad) {
-                currentQuote = JSON.parse(JSON.stringify(quoteToLoad));
+            const q = quotesHistory.find(q => q.id === id);
+            if (q) {
+                currentQuote = JSON.parse(JSON.stringify(q));
                 if(!currentQuote.type) currentQuote.type = 'COTIZACIÓN';
                 if(!currentQuote.currency) currentQuote.currency = 'DOP';
                 if(!currentQuote.status) currentQuote.status = 'PENDIENTE';
@@ -835,7 +746,6 @@
             }
         }
 
-        // --- EDITOR DE COTIZACIÓN ---
         function initQuoteView() {
             document.getElementById('quote-id-display').textContent = currentQuote.id;
             document.getElementById('quote-id-display-screen').textContent = currentQuote.id;
@@ -845,81 +755,54 @@
             document.getElementById('display-tax-label').textContent = `Impuestos (${settings.taxRate}%)`;
             document.getElementById('document-type-select').value = currentQuote.type || 'COTIZACIÓN';
             document.getElementById('quote-currency').value = currentQuote.currency || 'DOP';
-            
-            // Badge visual de estado en el editor
             const badge = document.getElementById('quote-status-badge');
-            const status = currentQuote.status || 'PENDIENTE';
-            badge.textContent = status;
-            badge.className = `px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(status)}`;
-            
+            const st = currentQuote.status || 'PENDIENTE';
+            badge.textContent = st;
+            badge.className = `px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(st)}`;
             const stamp = currentQuote.createdBy ? `Doc. original por: ${currentQuote.createdBy.split('@')[0]}` : '';
             document.getElementById('print-user-stamp').textContent = stamp;
-
             updateClientPhoneDisplay();
             renderItems();
         }
 
-        function handleDocumentTypeChange(value) { if (currentQuote) currentQuote.type = value; }
-        
-        function handleCurrencyChange(value) { 
-            if (currentQuote) {
-                currentQuote.currency = value;
-                renderItems(); 
-            }
-        }
+        function handleDocumentTypeChange(v) { if (currentQuote) currentQuote.type = v; }
+        function handleCurrencyChange(v) { if (currentQuote) { currentQuote.currency = v; renderItems(); } }
 
         function handleClientSelect(name) {
             currentQuote.clientName = name;
-            const client = clients.find(c => c.name === name);
-            currentQuote.clientPhone = client ? client.phone : '';
-            currentQuote.clientEmail = client ? client.email : '';
+            const c = clients.find(c => c.name === name);
+            currentQuote.clientPhone = c ? c.phone : '';
+            currentQuote.clientEmail = c ? c.email : '';
             updateClientPhoneDisplay();
         }
 
         function updateClientPhoneDisplay() {
-            const phoneContainer = document.getElementById('quote-client-phone-container');
-            const phoneSpan = document.getElementById('quote-client-phone');
-            if (currentQuote.clientPhone) {
-                phoneSpan.textContent = currentQuote.clientPhone;
-                phoneContainer.classList.remove('hidden');
-            } else {
-                phoneContainer.classList.add('hidden');
-            }
+            const cont = document.getElementById('quote-client-phone-container');
+            const span = document.getElementById('quote-client-phone');
+            if (currentQuote.clientPhone) { span.textContent = currentQuote.clientPhone; cont.classList.remove('hidden'); }
+            else cont.classList.add('hidden');
         }
 
         async function saveCurrentQuote() {
             if(!currentUser) return;
             const btn = document.getElementById('btn-save-quote');
             btn.innerHTML = `<div class="loader" style="width:20px;height:20px;border-width:2px;"></div>`;
-            
             if (currentQuote.clientName && !clients.find(c => c.name === currentQuote.clientName)) {
                 clients.push({ id: Date.now(), name: currentQuote.clientName, phone: currentQuote.clientPhone, email: currentQuote.clientEmail });
                 syncConfigToCloud();
                 renderClientDatalist();
             }
-
             currentQuote.lastModifiedBy = currentUser.email;
             if(!currentQuote.createdBy) currentQuote.createdBy = currentUser.email;
-
             try {
                 await db.collection('quotes').doc(currentQuote.id).set(currentQuote);
-                
-                const existingIndex = quotesHistory.findIndex(q => q.id === currentQuote.id);
-                if(existingIndex >= 0) quotesHistory[existingIndex] = JSON.parse(JSON.stringify(currentQuote));
+                const idx = quotesHistory.findIndex(q => q.id === currentQuote.id);
+                if(idx >= 0) quotesHistory[idx] = JSON.parse(JSON.stringify(currentQuote));
                 else quotesHistory.unshift(JSON.parse(JSON.stringify(currentQuote)));
-
                 const currentNum = parseInt(currentQuote.id.replace(settings.prefix, ''));
-                if(currentNum >= settings.nextNumber) {
-                    settings.nextNumber = currentNum + 1;
-                    syncConfigToCloud();
-                }
-
-                showToast(`Guardado en la nube exitosamente`);
-            } catch(e) {
-                console.error(e);
-                showToast(`Error al guardar en la nube`);
-            }
-            
+                if(currentNum >= settings.nextNumber) { settings.nextNumber = currentNum + 1; syncConfigToCloud(); }
+                showToast(`Guardado exitoso`);
+            } catch(e) { showToast(`Error al guardar`); }
             btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4 md:w-5 md:h-5"></i> <span class="hidden sm:inline">Guardar Nube</span>`;
             lucide.createIcons();
         }
@@ -927,10 +810,7 @@
         function handleNewQuote() {
             currentQuote = {
                 id: `${settings.prefix}${String(settings.nextNumber).padStart(3, '0')}`,
-                type: 'COTIZACIÓN',
-                currency: 'DOP',
-                status: 'PENDIENTE',
-                date: new Date().toISOString().split('T')[0],
+                type: 'COTIZACIÓN', currency: 'DOP', status: 'PENDIENTE', date: new Date().toISOString().split('T')[0],
                 clientName: '', clientPhone: '', clientEmail: '',
                 groups: [{ id: Date.now(), category: '', isManual: false, items: [{ id: Date.now() + 1, description: '', qty: 1, price: 0 }] }],
                 applyTax: true
@@ -938,118 +818,100 @@
             initQuoteView();
         }
 
-        // Funciones de items
         function addGroup() { currentQuote.groups.push({ id: Date.now(), category: '', isManual: false, items: [{ id: Date.now() + 1, description: '', qty: 1, price: 0 }] }); renderItems(); }
-        function removeGroup(groupId) { currentQuote.groups = currentQuote.groups.filter(g => g.id !== groupId); renderItems(); }
-        function addItemToGroup(groupId) { const g = currentQuote.groups.find(g => g.id === groupId); if(g){ g.items.push({ id: Date.now(), description: '', qty: 1, price: 0 }); renderItems(); } }
-        function removeItemFromGroup(groupId, itemId) { const g = currentQuote.groups.find(g => g.id === groupId); if(g){ g.items = g.items.filter(i => i.id !== itemId); renderItems(); } }
-        function handleCategoryChange(groupId, value) { const g = currentQuote.groups.find(g => g.id === groupId); if(g){ if(value==='--MANUAL--'){g.isManual=true; g.category='';}else{g.category=value;} renderItems(); } }
-        function setManualCategory(groupId, value) { const g = currentQuote.groups.find(g => g.id === groupId); if(g) g.category = value; }
-        function revertToSelect(groupId) { const g = currentQuote.groups.find(g => g.id === groupId); if(g){ g.isManual=false; g.category=''; renderItems(); } }
-        function updateItemField(groupId, itemId, field, value) {
-            const g = currentQuote.groups.find(g => g.id === groupId); if(!g) return;
-            const i = g.items.find(i => i.id === itemId); if(!i) return;
-            i[field] = value;
-            if(field==='qty'||field==='price'){ 
-                const curr = currentQuote.currency || 'DOP';
-                document.getElementById(`total-${i.id}`).textContent = formatCurrency(i.qty * i.price, curr); 
-                updateCalculations(); 
-            }
+        function removeGroup(gid) { currentQuote.groups = currentQuote.groups.filter(g => g.id !== gid); renderItems(); }
+        function addItemToGroup(gid) { const g = currentQuote.groups.find(g => g.id === gid); if(g){ g.items.push({ id: Date.now(), description: '', qty: 1, price: 0 }); renderItems(); } }
+        function removeItemFromGroup(gid, iid) { const g = currentQuote.groups.find(g => g.id === gid); if(g){ g.items = g.items.filter(i => i.id !== iid); renderItems(); } }
+        function handleCategoryChange(gid, v) { const g = currentQuote.groups.find(g => g.id === gid); if(g){ if(v==='--MANUAL--'){g.isManual=true; g.category='';}else{g.category=v;} renderItems(); } }
+        function setManualCategory(gid, v) { const g = currentQuote.groups.find(g => g.id === gid); if(g) g.category = v; }
+        function revertToSelect(gid) { const g = currentQuote.groups.find(g => g.id === gid); if(g){ g.isManual=false; g.category=''; renderItems(); } }
+        function updateItemField(gid, iid, f, v) {
+            const g = currentQuote.groups.find(g => g.id === gid); if(!g) return;
+            const i = g.items.find(i => i.id === iid); if(!i) return;
+            i[f] = v;
+            if(f==='qty'||f==='price'){ const curr = currentQuote.currency || 'DOP'; document.getElementById(`total-${i.id}`).textContent = formatCurrency(i.qty * i.price, curr); updateCalculations(); }
         }
 
         function renderItems() {
-            const container = document.getElementById('items-container');
-            container.innerHTML = '';
+            const cont = document.getElementById('items-container');
+            cont.innerHTML = '';
             const curr = currentQuote.currency || 'DOP';
-            const currSymbol = curr === 'USD' ? 'US$' : 'RD$';
+            const symb = curr === 'USD' ? 'US$' : 'RD$';
 
             currentQuote.groups.forEach(group => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = "mb-6 bg-gray-50 md:bg-transparent rounded-lg md:rounded-none border border-gray-200 md:border-none p-4 md:p-0 print:border-none print:p-0 print:mb-6 print:break-inside-avoid";
-                let categoryHtml = '';
-                if (group.isManual) {
-                    categoryHtml = `<div class="flex items-center w-full md:w-2/3 print:w-full"><input type="text" placeholder="Escriba la categoría..." class="font-bold text-gray-800 text-lg md:text-xl outline-none w-full bg-transparent focus:text-primary-800 print:text-primary-800 print:border-none" value="${group.category}" oninput="setManualCategory(${group.id}, this.value)"><button onclick="revertToSelect(${group.id})" class="ml-2 text-gray-400 hover:text-gray-600 print:hidden"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></button></div>`;
-                } else {
-                    const options = categories.map(cat => `<option value="${cat}" ${group.category === cat ? 'selected' : ''}>${cat}</option>`).join('');
-                    categoryHtml = `<select class="font-bold text-primary-800 md:text-gray-800 text-lg md:text-xl outline-none w-full md:w-2/3 print:w-full bg-transparent print:appearance-none cursor-pointer focus:text-primary-800 print:text-gray-800" onchange="handleCategoryChange(${group.id}, this.value)"><option value="" disabled ${!group.category ? 'selected' : ''}>Seleccionar categoría...</option>${options}<option value="--MANUAL--" class="text-primary-900 font-bold bg-primary">+ Escribir manual...</option></select>`;
-                }
-                let itemsHtml = group.items.map(item => `
+                let catHtml = group.isManual ? 
+                    `<div class="flex items-center w-full md:w-2/3 print:w-full"><input type="text" placeholder="Categoría..." class="font-bold text-gray-800 text-lg md:text-xl outline-none w-full bg-transparent print:text-primary-800 print:border-none" value="${group.category}" oninput="setManualCategory(${group.id}, this.value)"><button onclick="revertToSelect(${group.id})" class="ml-2 text-gray-400 hover:text-gray-600 print:hidden"><i data-lucide="rotate-ccw" class="w-5 h-5"></i></button></div>` :
+                    `<select class="font-bold text-primary-800 md:text-gray-800 text-lg md:text-xl outline-none w-full md:w-2/3 print:w-full bg-transparent cursor-pointer" onchange="handleCategoryChange(${group.id}, this.value)"><option value="" disabled ${!group.category ? 'selected' : ''}>Seleccionar categoría...</option>${categories.map(cat => `<option value="${cat}" ${group.category === cat ? 'selected' : ''}>${cat}</option>`).join('')}<option value="--MANUAL--" class="text-primary-900 font-bold bg-primary">+ Escribir manual...</option></select>`;
+                
+                let itsHtml = group.items.map(item => `
                     <div class="flex flex-col md:grid md:grid-cols-12 print:grid print:grid-cols-12 print:gap-4 gap-3 md:gap-4 items-start md:items-center py-2 border-b border-gray-100 md:border-b-0 md:mb-1 last:border-0 relative group/item print:border-b print:border-gray-100">
-                        <div class="w-full md:col-span-6 print:col-span-6 flex flex-col pr-6 md:pr-0 print:pr-0 pl-1 md:pl-2 print:pl-2"><input class="text-sm md:text-base text-gray-600 outline-none w-full print:border-none bg-transparent placeholder-gray-400" placeholder="Descripción del servicio..." value="${item.description}" oninput="updateItemField(${group.id}, ${item.id}, 'description', this.value)"></div>
-                        <div class="w-full md:col-span-6 print:col-span-6 flex flex-row justify-between items-center md:grid md:grid-cols-6 print:grid print:grid-cols-6 print:gap-4 md:gap-4 pl-1 md:pl-0 print:pl-0">
-                            <div class="flex flex-col items-start md:items-center print:items-center md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Cant.</span><input type="number" min="1" class="w-14 md:w-16 text-left md:text-center print:text-center outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.qty}" oninput="updateItemField(${group.id}, ${item.id}, 'qty', this.value)"></div>
-                            <div class="flex flex-col items-center md:items-end print:items-end md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Precio</span><div class="flex items-center"><span class="text-gray-500 mr-1 print:hidden text-xs md:text-sm">${currSymbol}</span><input type="number" class="w-16 md:w-20 text-right outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.price}" oninput="updateItemField(${group.id}, ${item.id}, 'price', this.value)"></div></div>
-                            <div class="flex flex-col items-end md:col-span-2 print:col-span-2 print:items-end"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Total</span><div id="total-${item.id}" class="text-right text-gray-800 font-medium text-sm md:text-base print:text-base">${formatCurrency(item.qty * item.price, curr)}</div></div>
+                        <div class="w-full md:col-span-6 print:col-span-6 flex flex-col pr-6 md:pr-0 pl-1 md:pl-2"><input class="text-sm md:text-base text-gray-600 outline-none w-full print:border-none bg-transparent placeholder-gray-400" placeholder="Servicio..." value="${item.description}" oninput="updateItemField(${group.id}, ${item.id}, 'description', this.value)"></div>
+                        <div class="w-full md:col-span-6 flex flex-row justify-between items-center md:grid md:grid-cols-6 print:grid print:grid-cols-6 print:gap-4 md:gap-4 pl-1 md:pl-0">
+                            <div class="flex flex-col items-start md:items-center print:items-center md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Cant.</span><input type="number" min="1" class="w-14 md:w-16 text-left md:text-center outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.qty}" oninput="updateItemField(${group.id}, ${item.id}, 'qty', this.value)"></div>
+                            <div class="flex flex-col items-center md:items-end print:items-end md:col-span-2 print:col-span-2"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Precio</span><div class="flex items-center"><span class="text-gray-500 mr-1 print:hidden text-xs md:text-sm">${symb}</span><input type="number" class="w-16 md:w-20 text-right outline-none border-b border-gray-200 print:border-none bg-transparent text-sm md:text-base focus:border-primary-600" value="${item.price}" oninput="updateItemField(${group.id}, ${item.id}, 'price', this.value)"></div></div>
+                            <div class="flex flex-col items-end md:col-span-2 print:items-end"><span class="text-[10px] text-gray-400 uppercase font-bold md:hidden print:hidden mb-1">Total</span><div id="total-${item.id}" class="text-right text-gray-800 font-medium text-sm md:text-base">${formatCurrency(item.qty * item.price, curr)}</div></div>
                         </div>
                         <button onclick="removeItemFromGroup(${group.id}, ${item.id})" class="absolute right-0 top-3 md:top-2 text-red-400 opacity-100 md:opacity-0 group-hover/item:opacity-100 transition-opacity print:hidden p-1 bg-red-50 md:bg-transparent rounded-md"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>`).join('');
-                groupDiv.innerHTML = `<div class="flex justify-between items-end mb-2 pb-1 border-b-2 border-primary-500 print:border-b-2 print:border-gray-800">${categoryHtml}<button onclick="removeGroup(${group.id})" class="text-red-400 hover:text-red-600 print:hidden p-1.5 rounded transition-colors"><i data-lucide="trash-2" class="w-5 h-5"></i></button></div><div class="flex flex-col space-y-1">${itemsHtml}</div><div class="mt-2 pb-2"><button onclick="addItemToGroup(${group.id})" class="flex items-center space-x-1 text-sm text-primary-800 hover:text-primary-900 font-medium print:hidden p-2 pl-0"><i data-lucide="plus" class="w-4 h-4"></i> <span>Añadir línea</span></button></div>`;
-                container.appendChild(groupDiv);
+                groupDiv.innerHTML = `<div class="flex justify-between items-end mb-2 pb-1 border-b-2 border-primary-500 print:border-b-2 print:border-gray-800">${catHtml}<button onclick="removeGroup(${group.id})" class="text-red-400 hover:text-red-600 print:hidden p-1.5 rounded transition-colors"><i data-lucide="trash-2" class="w-5 h-5"></i></button></div><div class="flex flex-col space-y-1">${itsHtml}</div><div class="mt-2 pb-2"><button onclick="addItemToGroup(${group.id})" class="flex items-center space-x-1 text-sm text-primary-800 hover:text-primary-900 font-medium print:hidden p-2 pl-0"><i data-lucide="plus" class="w-4 h-4"></i> <span>Añadir línea</span></button></div>`;
+                cont.appendChild(groupDiv);
             });
-            const addGroupBtn = document.createElement('button');
-            addGroupBtn.onclick = addGroup;
-            addGroupBtn.className = "mt-6 flex items-center justify-center w-full md:w-auto space-x-2 text-primary-900 border-2 border-dashed border-primary-600 bg-primary hover:bg-primary-400 hover:text-gray-900 py-3 px-6 rounded-lg font-medium print:hidden transition-colors";
-            addGroupBtn.innerHTML = `<i data-lucide="folder-plus" class="w-5 h-5"></i> <span>Añadir Bloque</span>`;
-            container.appendChild(addGroupBtn);
+            const addBtn = document.createElement('button');
+            addBtn.onclick = addGroup;
+            addBtn.className = "mt-6 flex items-center justify-center w-full md:w-auto space-x-2 text-primary-900 border-2 border-dashed border-primary-600 bg-primary hover:bg-primary-400 py-3 px-6 rounded-lg font-medium print:hidden transition-colors";
+            addBtn.innerHTML = `<i data-lucide="folder-plus" class="w-5 h-5"></i> <span>Añadir Bloque</span>`;
+            cont.appendChild(addBtn);
             lucide.createIcons();
             updateCalculations();
         }
 
         function updateCalculations() {
             currentQuote.applyTax = document.getElementById('quote-apply-tax').checked;
-            let subtotal = 0;
-            currentQuote.groups.forEach(g => g.items.forEach(i => subtotal += (Number(i.qty) * Number(i.price))));
-            const taxes = currentQuote.applyTax ? subtotal * (settings.taxRate / 100) : 0;
-            const curr = currentQuote.currency || 'DOP';
-
-            document.getElementById('display-subtotal').textContent = formatCurrency(subtotal, curr);
-            document.getElementById('display-tax-amount').textContent = formatCurrency(taxes, curr);
-            document.getElementById('display-total').textContent = formatCurrency(subtotal + taxes, curr);
+            let sub = 0;
+            currentQuote.groups.forEach(g => g.items.forEach(i => sub += (Number(i.qty) * Number(i.price))));
+            const tax = currentQuote.applyTax ? sub * (settings.taxRate / 100) : 0;
+            const c = currentQuote.currency || 'DOP';
+            document.getElementById('display-subtotal').textContent = formatCurrency(sub, c);
+            document.getElementById('display-tax-amount').textContent = formatCurrency(tax, c);
+            document.getElementById('display-total').textContent = formatCurrency(sub + tax, c);
         }
 
         function renderClientDatalist() {
             document.getElementById('client-list').innerHTML = clients.map(c => `<option value="${c.name}">`).join('');
         }
 
-        // --- MANEJO DE CLIENTES, CATEGORÍAS Y AJUSTES ---
         function renderClients() {
-            const tbody = document.getElementById('clients-table-body');
-            if (clients.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No hay clientes.</td></tr>`; return; }
-            tbody.innerHTML = clients.map(client => `
-                <tr class="hover:bg-gray-50 bg-white">
-                    <td class="p-3 border-b border-gray-100">${client.name}</td>
-                    <td class="p-3 border-b border-gray-100">${client.phone || '-'}</td>
-                    <td class="p-3 border-b border-gray-100">${client.email || '-'}</td>
-                    <td class="p-3 border-b border-gray-100 text-center"><button onclick="deleteClient(${client.id})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
-                </tr>`).join('');
+            const tb = document.getElementById('clients-table-body');
+            if (clients.length === 0) { tb.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No hay clientes.</td></tr>`; return; }
+            tb.innerHTML = clients.map(c => `<tr class="hover:bg-gray-50 bg-white border-b border-gray-100"><td class="p-3">${c.name}</td><td class="p-3 text-sm">${c.phone || '-'}</td><td class="p-3 text-sm">${c.email || '-'}</td><td class="p-3 text-center"><button onclick="deleteClient(${c.id})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td></tr>`).join('');
             lucide.createIcons();
         }
 
         function addClient() {
-            const name = document.getElementById('new-client-name').value.trim();
-            if (name) {
-                clients.push({ id: Date.now(), name, phone: document.getElementById('new-client-phone').value.trim(), email: document.getElementById('new-client-email').value.trim() });
+            const n = document.getElementById('new-client-name').value.trim();
+            if (n) {
+                clients.push({ id: Date.now(), name: n, phone: document.getElementById('new-client-phone').value.trim(), email: document.getElementById('new-client-email').value.trim() });
                 persistData(); renderClients(); renderClientDatalist();
-                document.getElementById('new-client-name').value = ''; document.getElementById('new-client-phone').value = ''; document.getElementById('new-client-email').value = '';
-                showToast('Cliente guardado en la nube');
+                ['new-client-name','new-client-phone','new-client-email'].forEach(id => document.getElementById(id).value = '');
+                showToast('Cliente guardado');
             }
         }
 
         function deleteClient(id) { clients = clients.filter(c => c.id !== id); persistData(); renderClients(); renderClientDatalist(); }
 
         function renderCategories() {
-            document.getElementById('categories-list').innerHTML = categories.map((cat, idx) => `
-                <li class="flex justify-between items-center p-3 bg-gray-50 border rounded"><span class="font-medium text-gray-700">${cat}</span><button onclick="deleteCategory('${cat}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button></li>
-            `).join('');
+            document.getElementById('categories-list').innerHTML = categories.map((cat) => `<li class="flex justify-between items-center p-3 bg-white border border-gray-100 rounded shadow-sm"><span class="font-medium text-gray-700">${cat}</span><button onclick="deleteCategory('${cat}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button></li>`).join('');
             lucide.createIcons();
         }
 
         function addCategory() {
-            const val = document.getElementById('new-category-input').value.trim();
-            if (val && !categories.includes(val)) { categories.push(val); persistData(); renderCategories(); document.getElementById('new-category-input').value = ''; if(document.getElementById('tab-cotizacion').classList.contains('active')) renderItems(); }
+            const v = document.getElementById('new-category-input').value.trim();
+            if (v && !categories.includes(v)) { categories.push(v); persistData(); renderCategories(); document.getElementById('new-category-input').value = ''; if(document.getElementById('tab-cotizacion').classList.contains('active')) renderItems(); }
         }
 
-        function deleteCategory(catName) { categories = categories.filter(c => c !== catName); persistData(); renderCategories(); }
+        function deleteCategory(cn) { categories = categories.filter(c => c !== cn); persistData(); renderCategories(); }
 
         function renderSettings() {
             document.getElementById('setting-tax').value = settings.taxRate;
@@ -1064,7 +926,7 @@
             persistData();
             document.getElementById('display-tax-label').textContent = `Impuestos (${settings.taxRate}%)`;
             if (currentQuote) updateCalculations();
-            showToast('Ajustes sincronizados');
+            showToast('Ajustes guardados');
         }
 
         function exportData() {
@@ -1072,13 +934,11 @@
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_jye.json`; a.click();
         }
 
-        // Init
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             document.getElementById('quote-date').addEventListener('change', function(e) { if (currentQuote) currentQuote.date = e.target.value; });
             setupInactivityListeners(); 
         });
-
     </script>
 </body>
 </html>
